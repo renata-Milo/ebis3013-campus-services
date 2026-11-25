@@ -1,5 +1,13 @@
+import type { Language } from "./i18n";
+
+let dateLocale = "en-GB";
+
+export function setFormatLanguage(language: Language) {
+  dateLocale = language === "zh" ? "zh-CN" : "en-GB";
+}
+
 export function formatDateTime(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat(dateLocale, {
     day: "2-digit",
     month: "short",
     hour: "2-digit",
@@ -9,7 +17,7 @@ export function formatDateTime(value: string) {
 }
 
 export function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-GB", {
+  return new Intl.DateTimeFormat(dateLocale, {
     day: "2-digit",
     month: "short",
     year: "numeric",

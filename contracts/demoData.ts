@@ -2,13 +2,29 @@ import type { DemoData, TimelineEvent } from "./types";
 
 export const STAFF_MEMBERS = ["Maya Chen", "Leo Martins", "Priya Nair"];
 
-export const CAMPUS_LOCATIONS = [
-  "Library – Level 2 Entrance",
-  "Student Centre – North Lobby",
-  "Innovation Hub – Studio 3",
-  "Science Block – Lab 1 Corridor",
-  "Sports Hall – Changing Room B",
+export const TEACHING_BUILDINGS = [
+  { id: "T1", floors: 5 },
+  { id: "T2", floors: 5 },
+  { id: "T3", floors: 5 },
+  { id: "T4", floors: 5 },
+  { id: "T5", floors: 5 },
+  { id: "T6", floors: 5 },
+  { id: "T7", floors: 4 },
+  { id: "T8", floors: 4 },
 ];
+
+export const CLASSROOMS_BY_BUILDING = Object.fromEntries(
+  TEACHING_BUILDINGS.map(({ id, floors }) => [
+    id,
+    Array.from({ length: floors * 6 }, (_, index) => {
+      const floor = Math.floor(index / 6) + 1;
+      const room = (index % 6) + 1;
+      return `${id}-${floor}0${room}`;
+    }),
+  ]),
+) as Record<string, string[]>;
+
+export const CAMPUS_LOCATIONS = Object.values(CLASSROOMS_BY_BUILDING).flat();
 
 const event = (
   id: string,
@@ -23,9 +39,9 @@ export function createInitialDemoData(): DemoData {
     tickets: [
       {
         id: "CL-104",
-        location: "Sports Hall – Changing Room B",
+        location: "T4-306",
         issueType: "Wet floor",
-        description: "Water was tracked in from the pool corridor.",
+        description: "Water has collected beside the desks after the rain.",
         submittedAt: "2026-11-24T09:10:00.000Z",
         status: "Awaiting review",
         assignedStaff: "Maya Chen",
@@ -45,9 +61,9 @@ export function createInitialDemoData(): DemoData {
       },
       {
         id: "CL-103",
-        location: "Science Block – Lab 1 Corridor",
+        location: "T5-204",
         issueType: "Dust and debris",
-        description: "Packaging debris is scattered beside the lab entrance.",
+        description: "Paper scraps and dust are visible beside the classroom entrance.",
         submittedAt: "2026-11-24T08:35:00.000Z",
         status: "In progress",
         assignedStaff: "Maya Chen",
@@ -59,9 +75,9 @@ export function createInitialDemoData(): DemoData {
       },
       {
         id: "CL-102",
-        location: "Student Centre – North Lobby",
+        location: "T6-102",
         issueType: "Overflowing bin",
-        description: "The recycling bin beside the lockers is full.",
+        description: "The recycling bin at the back of the classroom is full.",
         submittedAt: "2026-11-24T08:05:00.000Z",
         status: "Assigned",
         assignedStaff: "Maya Chen",
@@ -72,9 +88,9 @@ export function createInitialDemoData(): DemoData {
       },
       {
         id: "CL-101",
-        location: "Innovation Hub – Studio 3",
+        location: "T4-405",
         issueType: "Spilled drink",
-        description: "A drink has spilled under the shared worktable.",
+        description: "A drink has spilled under the desk in the front row.",
         submittedAt: "2026-11-24T07:50:00.000Z",
         status: "Submitted",
         timeline: [
@@ -83,13 +99,13 @@ export function createInitialDemoData(): DemoData {
       },
       {
         id: "CL-100",
-        location: "Library – Level 2 Entrance",
+        location: "T4-306",
         issueType: "Wet floor",
-        description: "Rainwater collected inside the main entrance.",
+        description: "Rainwater collected beside the classroom entrance.",
         submittedAt: "2026-11-23T15:20:00.000Z",
         status: "Closed",
         assignedStaff: "Leo Martins",
-        resolutionNote: "Entrance dried and mat repositioned.",
+        resolutionNote: "Entrance dried and the wet-floor sign removed.",
         timeline: [
           event("CL-100-1", "Request submitted", "2026-11-23T15:20:00.000Z", "Jamie Lee"),
           event("CL-100-2", "Assigned to Leo Martins", "2026-11-23T15:28:00.000Z", "Morgan Reed"),
@@ -112,7 +128,7 @@ export function createInitialDemoData(): DemoData {
       {
         id: "LF-025",
         name: "Black umbrella",
-        location: "Student Centre",
+        location: "T5-204",
         foundDate: "2026-11-24",
         publicDescription: "Compact black folding umbrella with a curved handle.",
         privateNote: "Red thread tied inside the handle",
@@ -121,7 +137,7 @@ export function createInitialDemoData(): DemoData {
       {
         id: "LF-022",
         name: "Grey wireless earbuds",
-        location: "Innovation Hub",
+        location: "T7-103",
         foundDate: "2026-11-22",
         publicDescription: "Grey earbuds in a small rounded charging case.",
         privateNote: "Initials J L etched inside the case",

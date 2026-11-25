@@ -1,7 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 import { z } from "zod";
-import { createInitialDemoData, STAFF_MEMBERS } from "@contracts/demoData";
+import { CAMPUS_LOCATIONS, createInitialDemoData, STAFF_MEMBERS } from "@contracts/demoData";
 import type { DemoData } from "@contracts/types";
 import { demoState } from "@db/schema";
 import { createRouter, publicQuery } from "./middleware";
@@ -9,10 +9,42 @@ import { getDb } from "./queries/connection";
 
 const STATE_ID = 1;
 
+function migrateLegacySamples(data: DemoData) {
+  const initial = createInitialDemoData();
+  const ticketSamples = new Map(initial.tickets.map((ticket) => [ticket.id, ticket]));
+  const itemSamples = new Map(initial.items.map((item) => [item.id, item]));
+  let changed = false;
+  for (const ticket of data.tickets) {
+    const sample = ticketSamples.get(ticket.id);
+    if (sample && ticket.location !== sample.location) {
+      ticket.location = sample.location;
+      ticket.description = sample.description;
+      changed = true;
+    }
+  }
+  for (const item of data.items) {
+    const sample = itemSamples.get(item.id);
+    if (sample && item.location !== sample.location) {
+      item.location = sample.location;
+      changed = true;
+    }
+  }
+  return changed;
+}
+
 async function readState(): Promise<DemoData> {
   const db = getDb();
   const rows = await db.select().from(demoState).where(eq(demoState.id, STATE_ID)).limit(1);
-  if (rows[0]) return rows[0].data;
+  if (rows[0]) {
+    const data = rows[0].data;
+    if (migrateLegacySamples(data)) {
+      await db
+        .update(demoState)
+        .set({ data, revision: rows[0].revision + 1, updatedAt: new Date() })
+        .where(eq(demoState.id, STATE_ID));
+    }
+    return data;
+  }
 
   const initial = createInitialDemoData();
   await db.insert(demoState).values({ id: STATE_ID, data: initial });
@@ -86,7 +118,7 @@ export const demoRouter = createRouter({
   submitCleaning: publicQuery
     .input(
       z.object({
-        location: z.string().min(1),
+        location: z.enum(CAMPUS_LOCATIONS as [string, ...string[]]),
         issueType: z.string().min(1),
         description: z.string().min(1).max(1000),
       }),

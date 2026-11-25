@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import type { Claim, CleaningTicket, FoundItem } from "@contracts/types";
 import { formatDate, formatDateTime } from "@/lib/format";
+import { translateStatus, useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { AppButton } from "./AppButton";
 
@@ -30,6 +31,7 @@ const statusStyles: Record<string, string> = {
 };
 
 export function StatusBadge({ status, className }: { status: string; className?: string }) {
+  const { language } = useI18n();
   return (
     <span
       className={cn(
@@ -39,7 +41,7 @@ export function StatusBadge({ status, className }: { status: string; className?:
       )}
     >
       <span className="size-2 shrink-0 rounded-full bg-current" aria-hidden="true" />
-      {status}
+      {translateStatus(status, language)}
     </span>
   );
 }
@@ -55,51 +57,55 @@ export function PageHeader({
   description?: string;
   action?: ReactNode;
 }) {
+  const { t } = useI18n();
   return (
     <header className="mb-8 flex flex-col gap-5 border-b pb-7 md:flex-row md:items-end md:justify-between">
       <div className="max-w-3xl">
-        <p className="section-label mb-3">{eyebrow}</p>
+        <p className="section-label mb-3">{t(eyebrow)}</p>
         <h1 className="text-balance text-3xl font-extrabold leading-[1.08] tracking-[-0.035em] md:text-5xl">
-          {title}
+          {t(title)}
         </h1>
-        {description && <p className="mt-4 max-w-2xl text-base text-muted-foreground md:text-lg">{description}</p>}
+        {description && <p className="mt-4 max-w-2xl text-base text-muted-foreground md:text-lg">{t(description)}</p>}
       </div>
       {action && <div className="shrink-0">{action}</div>}
     </header>
   );
 }
 
-export function BackButton({ onClick, label = "Back" }: { onClick: () => void; label?: string }) {
+export function BackButton({ onClick, label }: { onClick: () => void; label?: string }) {
+  const { t } = useI18n();
   return (
     <AppButton variant="ghost" compact onClick={onClick} className="mb-5 -ml-4">
       <ArrowLeft className="size-5" aria-hidden="true" />
-      {label}
+      {t(label ?? "Back")}
     </AppButton>
   );
 }
 
 export function EmptyState({ title, description }: { title: string; description: string }) {
+  const { t } = useI18n();
   return (
     <div className="border-y py-10 text-center">
       <Package className="mx-auto mb-3 size-7 text-muted-foreground" aria-hidden="true" />
-      <h3 className="text-xl font-bold">{title}</h3>
-      <p className="mt-1 text-muted-foreground">{description}</p>
+      <h3 className="text-xl font-bold">{t(title)}</h3>
+      <p className="mt-1 text-muted-foreground">{t(description)}</p>
     </div>
   );
 }
 
 export function TicketRow({ ticket, onClick }: { ticket: CleaningTicket; onClick: () => void }) {
+  const { t, text, language } = useI18n();
   return (
     <button
       type="button"
       onClick={onClick}
       className="group flex min-h-24 w-full flex-col gap-3 border-b py-5 text-left transition-colors duration-150 last:border-b-0 hover:bg-secondary md:flex-row md:items-center md:justify-between md:px-3"
-      aria-label={`Open ${ticket.id}, ${ticket.issueType}, ${ticket.status}`}
+      aria-label={`${t("Open", "打开")} ${ticket.id}, ${text(ticket.issueType)}, ${translateStatus(ticket.status, language)}`}
     >
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <span className="record-id">{ticket.id}</span>
-          <span className="text-lg font-bold">{ticket.issueType}</span>
+          <span className="text-lg font-bold">{text(ticket.issueType)}</span>
         </div>
         <p className="mt-1 flex items-start gap-2 text-muted-foreground">
           <MapPin className="mt-1 size-4 shrink-0" aria-hidden="true" />
@@ -115,19 +121,20 @@ export function TicketRow({ ticket, onClick }: { ticket: CleaningTicket; onClick
 }
 
 export function ClaimRow({ claim, item, onClick }: { claim: Claim; item?: FoundItem; onClick: () => void }) {
+  const { t, text, language } = useI18n();
   return (
     <button
       type="button"
       onClick={onClick}
       className="group flex min-h-24 w-full flex-col gap-3 border-b py-5 text-left transition-colors duration-150 last:border-b-0 hover:bg-secondary md:flex-row md:items-center md:justify-between md:px-3"
-      aria-label={`Open ${claim.id}, ${item?.name ?? "found item"}, ${claim.status}`}
+      aria-label={`${t("Open", "打开")} ${claim.id}, ${text(item?.name ?? "found item")}, ${translateStatus(claim.status, language)}`}
     >
       <div>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <span className="record-id">{claim.id}</span>
-          <span className="text-lg font-bold">{item?.name ?? claim.itemId}</span>
+          <span className="text-lg font-bold">{text(item?.name ?? claim.itemId)}</span>
         </div>
-        <p className="mt-1 text-muted-foreground">{item?.location} · Submitted {formatDateTime(claim.submittedAt)}</p>
+        <p className="mt-1 text-muted-foreground">{text(item?.location ?? "")} · {t("Submitted", "提交于")} {formatDateTime(claim.submittedAt)}</p>
       </div>
       <div className="flex items-center justify-between gap-4 md:justify-end">
         <StatusBadge status={claim.status} />
@@ -147,13 +154,14 @@ export function ItemIcon({ item, className }: { item: FoundItem; className?: str
 }
 
 export function ItemMeta({ item }: { item: FoundItem }) {
+  const { t, text } = useI18n();
   return (
     <div className="mt-3 flex flex-col gap-1 text-muted-foreground">
       <span className="flex items-center gap-2">
-        <MapPin className="size-4" aria-hidden="true" /> {item.location}
+        <MapPin className="size-4" aria-hidden="true" /> {text(item.location)}
       </span>
       <span className="flex items-center gap-2">
-        <CalendarDays className="size-4" aria-hidden="true" /> Found {formatDate(item.foundDate)}
+        <CalendarDays className="size-4" aria-hidden="true" /> {t("Found", "拾获日期")} {formatDate(item.foundDate)}
       </span>
     </div>
   );

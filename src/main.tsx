@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router'
 import './index.css'
 import { TRPCProvider } from "@/providers/trpc"
 import { registerSW } from "virtual:pwa-register"
+import { I18nProvider } from "@/lib/i18n"
 import App from './App.tsx'
 
 registerSW({ immediate: true })
@@ -13,7 +14,9 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <TRPCProvider>
-        <App />
+        <I18nProvider>
+          <App />
+        </I18nProvider>
       </TRPCProvider>
     </BrowserRouter>
   </StrictMode>,

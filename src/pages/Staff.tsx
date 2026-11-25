@@ -2,6 +2,7 @@ import { STAFF_MEMBERS } from "@contracts/demoData";
 import type { DemoData } from "@contracts/types";
 import type { DemoActions } from "@/hooks/useDemoActions";
 import { go } from "@/lib/router";
+import { useI18n } from "@/lib/i18n";
 import { AppButton } from "@/components/AppButton";
 import { BackButton, EmptyState, PageHeader, TicketRow } from "@/components/Common";
 import { TicketDetail } from "@/components/TicketDetail";
@@ -15,9 +16,10 @@ interface StaffProps {
 }
 
 function StaffSelect({ staffMember, setStaffMember }: Pick<StaffProps, "staffMember" | "setStaffMember">) {
+  const { t } = useI18n();
   return (
     <label className="block min-w-0">
-      <span className="section-label mb-2 block">Staff member</span>
+      <span className="section-label mb-2 block">{t("Staff member")}</span>
       <select className="field-input min-w-[220px]" value={staffMember} onChange={(event) => setStaffMember(event.target.value)}>
         {STAFF_MEMBERS.map((staff) => <option key={staff}>{staff}</option>)}
       </select>
@@ -26,6 +28,7 @@ function StaffSelect({ staffMember, setStaffMember }: Pick<StaffProps, "staffMem
 }
 
 export function StaffPage({ parts, data, actions, staffMember, setStaffMember }: StaffProps) {
+  const { t, text } = useI18n();
   const [section, id] = parts;
   if (section === "ticket" && id) {
     const ticket = data.tickets.find((entry) => entry.id === id);
@@ -33,7 +36,7 @@ export function StaffPage({ parts, data, actions, staffMember, setStaffMember }:
       return (
         <div>
           <PageHeader eyebrow="Cleaning staff" title="Task not found" description="This task is not in the current demo data." />
-          <AppButton onClick={() => go("staff", "home")}>Back to my assigned tasks</AppButton>
+          <AppButton onClick={() => go("staff", "home")}>{t("Back to my assigned tasks")}</AppButton>
         </div>
       );
     }
@@ -43,7 +46,7 @@ export function StaffPage({ parts, data, actions, staffMember, setStaffMember }:
         <PageHeader
           eyebrow="Cleaning Staff · Assigned task"
           title={ticket.id}
-          description={ticket.issueType}
+          description={text(ticket.issueType)}
           action={<StaffSelect staffMember={staffMember} setStaffMember={setStaffMember} />}
         />
         <TicketDetail ticket={ticket} role="staff" staffMember={staffMember} actions={actions} />
@@ -65,7 +68,7 @@ export function StaffPage({ parts, data, actions, staffMember, setStaffMember }:
         action={<StaffSelect staffMember={staffMember} setStaffMember={setStaffMember} />}
       />
       <div className="mb-4 flex items-end justify-between">
-        <h2 className="text-2xl font-extrabold tracking-tight md:text-3xl">{history ? "Work history" : "My assigned tasks"}</h2>
+        <h2 className="text-2xl font-extrabold tracking-tight md:text-3xl">{t(history ? "Work history" : "My assigned tasks")}</h2>
         <span className="text-xl font-extrabold text-primary">{tickets.length}</span>
       </div>
       <div className="panel px-5 md:px-6">
@@ -74,7 +77,7 @@ export function StaffPage({ parts, data, actions, staffMember, setStaffMember }:
         )) : (
           <EmptyState
             title={history ? "No completed work yet" : "No assigned tasks"}
-            description={history ? "Submitted and closed work will appear here." : `Tasks assigned to ${staffMember} will appear here.`}
+            description={history ? t("Submitted and closed work will appear here.") : t(`Tasks assigned to ${staffMember} will appear here.`, `分配给 ${staffMember} 的任务会显示在这里。`)}
           />
         )}
       </div>

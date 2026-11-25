@@ -1,11 +1,13 @@
 import type { DemoData } from "@contracts/types";
 import type { DemoActions } from "@/hooks/useDemoActions";
 import { go } from "@/lib/router";
+import { useI18n } from "@/lib/i18n";
 import { AppButton } from "@/components/AppButton";
 import { BackButton, EmptyState, PageHeader, TicketRow } from "@/components/Common";
 import { TicketDetail } from "@/components/TicketDetail";
 
 export function SupervisorPage({ parts, data, actions }: { parts: string[]; data: DemoData; actions: DemoActions }) {
+  const { t, text } = useI18n();
   const [section, id] = parts;
   if (section === "ticket" && id) {
     const ticket = data.tickets.find((entry) => entry.id === id);
@@ -13,14 +15,14 @@ export function SupervisorPage({ parts, data, actions }: { parts: string[]; data
       return (
         <div>
           <PageHeader eyebrow="Cleaning supervisor" title="Request not found" description="This request is not in the current demo data." />
-          <AppButton onClick={() => go("supervisor", "home")}>Back to work queues</AppButton>
+          <AppButton onClick={() => go("supervisor", "home")}>{t("Back to work queues")}</AppButton>
         </div>
       );
     }
     return (
       <div>
         <BackButton onClick={() => go("supervisor", "home")} label="Back to work queues" />
-        <PageHeader eyebrow="Cleaning supervisor · Request" title={ticket.id} description={ticket.issueType} />
+        <PageHeader eyebrow="Cleaning supervisor · Request" title={ticket.id} description={text(ticket.issueType)} />
         <TicketDetail ticket={ticket} role="supervisor" staffMember="" actions={actions} />
       </div>
     );
@@ -55,10 +57,10 @@ export function SupervisorPage({ parts, data, actions }: { parts: string[]; data
       <section aria-labelledby="unassigned-heading">
         <div className="mb-4 flex items-end justify-between gap-4">
           <div>
-            <p className="section-label">Queue 01</p>
-            <h2 id="unassigned-heading" className="mt-1 text-2xl font-extrabold tracking-tight md:text-3xl">Unassigned requests</h2>
+            <p className="section-label">{t("Queue 01")}</p>
+            <h2 id="unassigned-heading" className="mt-1 text-2xl font-extrabold tracking-tight md:text-3xl">{t("Unassigned requests")}</h2>
           </div>
-          <span className="text-xl font-extrabold text-primary" aria-label={`${unassigned.length} unassigned requests`}>{unassigned.length}</span>
+          <span className="text-xl font-extrabold text-primary" aria-label={`${unassigned.length} ${t("unassigned requests", "条待派单工单")}`}>{unassigned.length}</span>
         </div>
         <div className="panel px-5 md:px-6">
           {unassigned.length ? unassigned.map((ticket) => (
@@ -70,10 +72,10 @@ export function SupervisorPage({ parts, data, actions }: { parts: string[]; data
       <section className="mt-10" aria-labelledby="review-heading">
         <div className="mb-4 flex items-end justify-between gap-4">
           <div>
-            <p className="section-label">Queue 02</p>
-            <h2 id="review-heading" className="mt-1 text-2xl font-extrabold tracking-tight md:text-3xl">Awaiting review</h2>
+            <p className="section-label">{t("Queue 02")}</p>
+            <h2 id="review-heading" className="mt-1 text-2xl font-extrabold tracking-tight md:text-3xl">{t("Awaiting review")}</h2>
           </div>
-          <span className="text-xl font-extrabold text-primary" aria-label={`${review.length} requests awaiting review`}>{review.length}</span>
+          <span className="text-xl font-extrabold text-primary" aria-label={`${review.length} ${t("requests awaiting review", "条待复核工单")}`}>{review.length}</span>
         </div>
         <div className="panel px-5 md:px-6">
           {review.length ? review.map((ticket) => (
