@@ -4,6 +4,7 @@ const __dirname = import.meta.dirname
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
 import { inspectAttr } from 'kimi-plugin-inspect-react'
+import { VitePWA } from "vite-plugin-pwa"
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -17,6 +18,34 @@ export default defineConfig({
       },
     },
     devServer({ entry: "api/boot.ts", exclude: [/^\/(?!api\/).*$/] }),
+    VitePWA({
+      registerType: "autoUpdate",
+      includeAssets: ["icons/favicon-32.png", "icons/apple-touch-icon.png"],
+      manifest: {
+        name: "Campus Services – EBIS3013",
+        short_name: "Campus Services",
+        description: "Integrated campus cleaning and lost-and-found service prototype.",
+        theme_color: "#f5f5f5",
+        background_color: "#f5f5f5",
+        display: "standalone",
+        start_url: "/",
+        icons: [
+          { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
+          { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
+          { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+        ],
+      },
+      workbox: {
+        navigateFallback: null,
+        globPatterns: ["**/*.{js,css,png,woff2}"],
+        runtimeCaching: [
+          {
+            urlPattern: ({ request }) => request.mode === "navigate",
+            handler: "NetworkOnly",
+          },
+        ],
+      },
+    }),
     inspectAttr(), react()],
   server: {
     port: 3000,

@@ -1,75 +1,162 @@
+@import "@fontsource-variable/bricolage-grotesque";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 5.9% 10%;
-    --radius: 0.625rem;
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --primitive-canvas: 0.961 0 0;
+    --primitive-paper: 0.994 0 0;
+    --primitive-ink: 0.18 0 0;
+    --primitive-periwinkle-50: 0.955 0.015 278;
+    --primitive-periwinkle-100: 0.91 0.035 278;
+    --primitive-periwinkle-700: 0.42 0.12 278;
+    --primitive-periwinkle-800: 0.34 0.1 278;
+    --primitive-border: 0.86 0.01 278;
+    --primitive-muted-text: 0.43 0.015 278;
+
+    --background: var(--primitive-canvas);
+    --foreground: var(--primitive-ink);
+    --card: var(--primitive-paper);
+    --card-foreground: var(--primitive-ink);
+    --popover: var(--primitive-paper);
+    --popover-foreground: var(--primitive-ink);
+    --primary: var(--primitive-periwinkle-700);
+    --primary-foreground: var(--primitive-paper);
+    --secondary: var(--primitive-periwinkle-50);
+    --secondary-foreground: var(--primitive-periwinkle-800);
+    --muted: var(--primitive-periwinkle-50);
+    --muted-foreground: var(--primitive-muted-text);
+    --accent: var(--primitive-periwinkle-100);
+    --accent-foreground: var(--primitive-periwinkle-800);
+    --destructive: 0.48 0.18 25;
+    --destructive-foreground: var(--primitive-paper);
+    --border: var(--primitive-border);
+    --input: var(--primitive-border);
+    --ring: var(--primitive-periwinkle-700);
+    --radius: 0.75rem;
+    --sidebar-background: var(--primitive-paper);
+    --sidebar-foreground: var(--primitive-ink);
+    --sidebar-primary: var(--primitive-periwinkle-700);
+    --sidebar-primary-foreground: var(--primitive-paper);
+    --sidebar-accent: var(--primitive-periwinkle-50);
+    --sidebar-accent-foreground: var(--primitive-periwinkle-800);
+    --sidebar-border: var(--primitive-border);
+    --sidebar-ring: var(--primitive-periwinkle-700);
+
+    --component-button: var(--primitive-periwinkle-700);
+    --component-button-hover: var(--primitive-periwinkle-800);
+    --component-focus: var(--primitive-periwinkle-700);
   }
 
-  .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-}
-
-@layer base {
   * {
     @apply border-border;
   }
+
+  html {
+    min-width: 320px;
+    background: oklch(var(--background));
+    scroll-behavior: smooth;
+  }
+
   body {
     @apply bg-background text-foreground;
+    min-width: 320px;
+    min-height: 100dvh;
+    margin: 0;
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    font-family: "Bricolage Grotesque Variable", "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    font-optical-sizing: auto;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  button,
+  [role="button"],
+  select {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  select:disabled {
+    cursor: not-allowed;
+  }
+
+  ::selection {
+    color: oklch(var(--primitive-paper));
+    background: oklch(var(--primitive-periwinkle-700));
+  }
+
+  :focus-visible {
+    outline: 3px solid oklch(var(--component-focus));
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  .panel {
+    @apply rounded-xl border bg-card;
+  }
+
+  .field-label {
+    @apply mb-2 block text-base font-bold text-foreground;
+  }
+
+  .field-input {
+    @apply min-h-12 w-full rounded-lg border bg-card px-4 py-3 text-base text-foreground shadow-none transition-colors duration-150 placeholder:text-muted-foreground hover:border-primary disabled:opacity-60;
+  }
+
+  .field-input[aria-invalid="true"] {
+    @apply border-red-700;
+  }
+
+  .section-label {
+    @apply text-xs font-extrabold uppercase tracking-[0.14em] text-muted-foreground;
+  }
+
+  .record-id {
+    @apply font-mono text-lg font-bold tracking-tight text-foreground;
+  }
+
+  .action-link {
+    position: relative;
+  }
+
+  .action-link::after {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    content: "";
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 180ms cubic-bezier(0.52, 0.08, 0.18, 1);
+  }
+
+  .action-link:hover::after,
+  .action-link:focus-visible::after {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
 }
