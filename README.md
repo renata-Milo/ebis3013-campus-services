@@ -28,6 +28,16 @@ npm start
 
 The production build serves `dist/public` through the bundled Hono server at `dist/boot.js`.
 
+## GitHub Pages demo
+
+The public static demo is deployed to `https://renata-milo.github.io/ebis3013-campus-services/` by `.github/workflows/deploy-pages.yml`.
+
+```bash
+npm run build:pages
+```
+
+GitHub Pages cannot run the MySQL/Hono backend, so this deployment uses the same workflows with shared demo data stored in the current browser's local storage. The full server-backed version remains available through the normal production build.
+
 ## Structure
 
 - `src/pages/`: role-specific views and forms

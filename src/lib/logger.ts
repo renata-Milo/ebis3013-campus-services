@@ -113,6 +113,7 @@ function flush(): void {
 }
 
 function send(chunk: Array<{ level: Level; msg: string; ctx?: Record<string, unknown> }>): void {
+  if (import.meta.env.VITE_STATIC_DEMO === "true") return;
   try {
     // sendBeacon survives page unload (the common case for a crash); fall back
     // to fetch where it is unavailable.

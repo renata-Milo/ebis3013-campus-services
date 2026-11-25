@@ -7,7 +7,11 @@ import { inspectAttr } from 'kimi-plugin-inspect-react'
 import { VitePWA } from "vite-plugin-pwa"
 
 // https://vite.dev/config/
+const isStaticDemo = process.env.VITE_STATIC_DEMO === "true";
+const base = isStaticDemo ? "/ebis3013-campus-services/" : "/";
+
 export default defineConfig({
+  base,
   plugins: [
     {
       name: "kimi-preview-host",
@@ -28,11 +32,11 @@ export default defineConfig({
         theme_color: "#f5f5f5",
         background_color: "#f5f5f5",
         display: "standalone",
-        start_url: "/",
+        start_url: base,
         icons: [
-          { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png" },
-          { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png" },
-          { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+          { src: `${base}icons/icon-192.png`, sizes: "192x192", type: "image/png" },
+          { src: `${base}icons/icon-512.png`, sizes: "512x512", type: "image/png" },
+          { src: `${base}icons/icon-512.png`, sizes: "512x512", type: "image/png", purpose: "maskable" },
         ],
       },
       workbox: {
